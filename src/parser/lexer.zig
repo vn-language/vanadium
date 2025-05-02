@@ -223,7 +223,7 @@ pub fn print_token(token: Token, idx: usize) void {
     switch (token.kind) {
         TokenType.Identifier => kind_color = CYAN,
         TokenType.Keyword => kind_color = GREEN,
-        TokenType.Type => kind_color = BLUE,
+        // TokenType.Type => kind_color = BLUE,
         TokenType.Number => kind_color = YELLOW,
         TokenType.String => kind_color = MAGENTA,
         TokenType.Operator => kind_color = RED,
