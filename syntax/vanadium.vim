@@ -1,0 +1,1 @@
+/home/vorp/.config/nvim/syntax/vanadium.vim
