@@ -1,0 +1,8 @@
+[package]
+name = "Vanadium"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chumsky = "0.10.1"
+inkwell = { version = "0.6.0", features = ["llvm18-1"] }
