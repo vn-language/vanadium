@@ -1,5 +1,8 @@
 etc/
 
+# clangd cache
+.cache/
+
 # archive of Zig version
 zigold.zip
 # archive of Rust version
