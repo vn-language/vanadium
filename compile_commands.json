@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/vorp/Projects/vanadium/lang/build",
+  "command": "/usr/bin/c++  -I/home/vorp/Projects/vanadium/lang/include -g -o CMakeFiles/vanadium.dir/src/main.cpp.o -c /home/vorp/Projects/vanadium/lang/src/main.cpp",
+  "file": "/home/vorp/Projects/vanadium/lang/src/main.cpp",
+  "output": "CMakeFiles/vanadium.dir/src/main.cpp.o"
+}
+]

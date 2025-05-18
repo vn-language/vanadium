@@ -1,0 +1,3 @@
+/home/vorp/Projects/vanadium/lang/build/CMakeFiles/vanadium.dir
+/home/vorp/Projects/vanadium/lang/build/CMakeFiles/edit_cache.dir
+/home/vorp/Projects/vanadium/lang/build/CMakeFiles/rebuild_cache.dir
