@@ -1,5 +1,6 @@
 #include "vanadium/parser/lexer.hpp"
 #include "vanadium/types.hpp"
+#include "vanadium/util_macros.hpp"
 
 #include <cctype>
 #include <cstddef>
@@ -35,39 +36,43 @@ TokenStream tokenize(std::string input) {
   TokenList tokens;
 
   size_t index = 0;
-  size_t line = 0;
+  size_t line = 1;
+
   while (NOT_OUT_OF_BOUNDS) {
-    const char &ch = AT_INDEX;
-    if (ch == '\n' || ch == ' ') {
-      if (ch == '\n') {
+    if (AT_INDEX == '\n' || AT_INDEX == ' ') {
+      if (AT_INDEX == '\n') {
         line++;
       }
       index++;
       continue;
     }
 
-    if (std::isdigit(ch)) {
+    if (std::isdigit(AT_INDEX)) {
       int from = index;
-      std::string buf(1, ch);
+      TokenType final_type;
+      std::string buf(1, AT_INDEX);
       index++;
       while (CHECK_NEXT_INDEX && std::isdigit(AT_INDEX)) {
         buf += AT_INDEX;
         index++;
       }
       if (AT_INDEX == '.') {
+        final_type = TokenType::Float;
         buf += ".";
         index++;
         while (CHECK_NEXT_INDEX && std::isdigit(AT_INDEX)) {
           buf += AT_INDEX;
           index++;
         }
+      } else {
+        final_type = TokenType::Int;
       }
       int to = index;
 
-      PUSH_TOKEN(Token(TokenType::Number, buf, from, to, line));
+      PUSH_TOKEN(Token(final_type, buf, from, to, line));
     }
 
-    if (ch == '"') {
+    if (AT_INDEX == '"') {
       int from = index;
       std::string buf;
       index++;
@@ -81,9 +86,9 @@ TokenStream tokenize(std::string input) {
       PUSH_TOKEN(Token(TokenType::String, buf, from, to, line));
     }
 
-    if (std::isalnum(ch) || ch == '_') {
+    if (std::isalnum(AT_INDEX) || AT_INDEX == '_') {
       int from = index;
-      std::string buf(1, ch);
+      std::string buf(1, AT_INDEX);
       index++;
       while (CHECK_NEXT_INDEX && (std::isalnum(AT_INDEX)) || AT_INDEX == '_') {
         buf += AT_INDEX;
@@ -91,7 +96,19 @@ TokenStream tokenize(std::string input) {
       }
       int to = index;
 
-      PUSH_TOKEN(Token(TokenType::Ident, buf, from, to, line))
+      if (keyword_map.count(buf) > 0) {
+        PUSH_TOKEN(Token(keyword_map.at(buf), buf, from, to, line));
+      } else {
+        PUSH_TOKEN(Token(TokenType::Ident, buf, from, to, line))
+      }
+    }
+
+    if (SET_HAS(op_list, AT_INDEX)) {
+      PUSH_TOKEN(
+          Token(TokenType::Op, std::string(1, AT_INDEX), index, index, line))
+    } else if (SET_HAS(punct_list, AT_INDEX)) {
+      PUSH_TOKEN(
+          Token(TokenType::Punct, std::string(1, AT_INDEX), index, index, line))
     }
 
     index++;
