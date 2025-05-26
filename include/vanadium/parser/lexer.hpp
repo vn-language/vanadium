@@ -9,15 +9,18 @@
 
 #include "vanadium/types.hpp"
 
+namespace vanadium {
+namespace lexer {
+
 enum class TokenType {
   // End of input
   EOI,
 
   // Primitive
+  Ident,
   Float,
   Int,
   String,
-  Ident,
   Op,
   Punct,
 
@@ -66,6 +69,8 @@ enum class TokenType {
   Or,
   Not
 };
+
+extern std::string type_as_string(TokenType type);
 
 const std::map<std::string, TokenType> keyword_map = {
     {"if", TokenType::If},
@@ -145,7 +150,7 @@ struct Token {
       : kind(type), lexeme(lexeme), pos(from, to, line) {}
 
   void display() const {
-    std::cout << "Type: " << (int)kind << ", Lexeme: '" << lexeme
+    std::cout << "Type: " << type_as_string(kind) << ", Lexeme: '" << lexeme
               << "', Pos: " << pos.as_string() << std::endl;
   };
 };
@@ -162,6 +167,7 @@ public:
   ~TokenStream() = default;
 
   Token next();
+  Token get();
   bool has_next();
   bool next_is_eoi();
   Token peek(ulong offset);
@@ -174,5 +180,8 @@ private:
 };
 
 extern TokenStream tokenize(std::string input);
+
+} // namespace lexer
+} // namespace vanadium
 
 #endif // INCLUDE_PARSER_LEXER_HPP_
