@@ -7,8 +7,6 @@
 #include <string>
 #include <vector>
 
-#include "vanadium/types.hpp"
-
 namespace vanadium {
 namespace lexer {
 
@@ -51,6 +49,7 @@ enum class TokenType {
   Let,
   Const,
   Static,
+  Export,
   Discard,
   From,
   Include,
@@ -67,7 +66,8 @@ enum class TokenType {
   Destruct,
   And,
   Or,
-  Not
+  Not,
+  Sealed,
 };
 
 extern std::string type_as_string(TokenType type);
@@ -99,6 +99,7 @@ const std::map<std::string, TokenType> keyword_map = {
     {"let", TokenType::Let},
     {"const", TokenType::Const},
     {"static", TokenType::Static},
+    {"export", TokenType::Export},
     {"discard", TokenType::Discard},
     {"from", TokenType::From},
     {"include", TokenType::Include},
@@ -114,7 +115,8 @@ const std::map<std::string, TokenType> keyword_map = {
     {"new", TokenType::New},
     {"and", TokenType::And},
     {"or", TokenType::Or},
-    {"not", TokenType::Not}};
+    {"not", TokenType::Not},
+    {"sealed", TokenType::Sealed}};
 
 const std::set<char> op_list = {'-', '+', '*', '/', '^', '=',
                                 '<', '>', '!', '?', '&', '|'};
@@ -124,9 +126,9 @@ const std::set<char> punct_list = {'(', ')', '{', '}', '[',
 struct TokenPos {
   long from;
   long to;
-  ulong line;
+  size_t line;
   TokenPos(int from, int to) : from(from), to(to), line(-1) {};
-  TokenPos(int from, int to, ulong line) : from(from), to(to), line(line) {};
+  TokenPos(int from, int to, size_t line) : from(from), to(to), line(line) {};
 
   std::string as_string() const {
     return std::string((line != -1) ? std::to_string(line) : "unknown") + ":" +
@@ -146,7 +148,7 @@ struct Token {
       : kind(type), lexeme(lexeme), pos(pos) {}
   Token(TokenType type, std::string lexeme, int from, int to)
       : kind(type), lexeme(lexeme), pos(from, to) {}
-  Token(TokenType type, std::string lexeme, int from, int to, ulong line)
+  Token(TokenType type, std::string lexeme, int from, int to, size_t line)
       : kind(type), lexeme(lexeme), pos(from, to, line) {}
 
   void display() const {
@@ -170,13 +172,13 @@ public:
   Token get();
   bool has_next();
   bool next_is_eoi();
-  Token peek(ulong offset);
-  const ulong get_index();
+  Token peek(size_t offset);
+  const size_t get_index();
   const TokenList get_tokens();
 
 private:
   TokenList tokens;
-  ulong current;
+  size_t current;
 };
 
 extern TokenStream tokenize(std::string input);

@@ -1,5 +1,4 @@
 #include "vanadium/parser/lexer.hpp"
-#include "vanadium/types.hpp"
 #include "vanadium/util_macros.hpp"
 
 #include <cctype>
@@ -15,17 +14,16 @@ namespace lexer {
 Token TokenStream::next() { return tokens.at(current++); }
 Token TokenStream::get() { return tokens.at(current); }
 
-bool TokenStream::has_next() { return tokens.size() >= current + 1; }
+bool TokenStream::has_next() { return tokens.size() > current + 1; }
 bool TokenStream::next_is_eoi() {
   return has_next() && peek(1).kind != TokenType::EOI;
 };
 
-Token TokenStream::peek(ulong offset = 1) {
+Token TokenStream::peek(size_t offset = 1) {
   return tokens.at(current + offset);
 }
 
-const ulong TokenStream::get_index() { return current; }
-
+const size_t TokenStream::get_index() { return current; }
 const TokenList TokenStream::get_tokens() { return tokens; }
 
 /* Main lexer logic */
@@ -138,7 +136,7 @@ TokenStream tokenize(std::string input) {
       }
     }
 
-    if (op_list.find(AT_INDEX) != op_list.end()) {
+    if (SET_HAS(op_list, AT_INDEX)) {
       int from = index;
       std::string lex(1, AT_INDEX);
       index++;
@@ -146,7 +144,7 @@ TokenStream tokenize(std::string input) {
       PUSH_TOKEN(Token(TokenType::Op, lex, from, to, line));
     }
 
-    if (punct_list.find(AT_INDEX) != punct_list.end()) {
+    if (SET_HAS(punct_list, AT_INDEX)) {
       int from = index;
       std::string lex(1, AT_INDEX);
       index++;
