@@ -1,8 +1,32 @@
 [
 {
-  "directory": "/home/vorp/Projects/vanadium/lang/build",
-  "command": "/usr/bin/c++  -I/home/vorp/Projects/vanadium/lang/include -g -o CMakeFiles/vanadium.dir/src/main.cpp.o -c /home/vorp/Projects/vanadium/lang/src/main.cpp",
-  "file": "/home/vorp/Projects/vanadium/lang/src/main.cpp",
+  "directory": "/home/luca/Projects/vanadium/lang/build",
+  "command": "/usr/lib64/ccache/c++  -I/home/luca/Projects/vanadium/lang/include -g -o CMakeFiles/vanadium.dir/src/diagnostics/diagnostics.cpp.o -c /home/luca/Projects/vanadium/lang/src/diagnostics/diagnostics.cpp",
+  "file": "/home/luca/Projects/vanadium/lang/src/diagnostics/diagnostics.cpp",
+  "output": "CMakeFiles/vanadium.dir/src/diagnostics/diagnostics.cpp.o"
+},
+{
+  "directory": "/home/luca/Projects/vanadium/lang/build",
+  "command": "/usr/lib64/ccache/c++  -I/home/luca/Projects/vanadium/lang/include -g -o CMakeFiles/vanadium.dir/src/main.cpp.o -c /home/luca/Projects/vanadium/lang/src/main.cpp",
+  "file": "/home/luca/Projects/vanadium/lang/src/main.cpp",
   "output": "CMakeFiles/vanadium.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/luca/Projects/vanadium/lang/build",
+  "command": "/usr/lib64/ccache/c++  -I/home/luca/Projects/vanadium/lang/include -g -o CMakeFiles/vanadium.dir/src/parser/ast.cpp.o -c /home/luca/Projects/vanadium/lang/src/parser/ast.cpp",
+  "file": "/home/luca/Projects/vanadium/lang/src/parser/ast.cpp",
+  "output": "CMakeFiles/vanadium.dir/src/parser/ast.cpp.o"
+},
+{
+  "directory": "/home/luca/Projects/vanadium/lang/build",
+  "command": "/usr/lib64/ccache/c++  -I/home/luca/Projects/vanadium/lang/include -g -o CMakeFiles/vanadium.dir/src/parser/lexer.cpp.o -c /home/luca/Projects/vanadium/lang/src/parser/lexer.cpp",
+  "file": "/home/luca/Projects/vanadium/lang/src/parser/lexer.cpp",
+  "output": "CMakeFiles/vanadium.dir/src/parser/lexer.cpp.o"
+},
+{
+  "directory": "/home/luca/Projects/vanadium/lang/build",
+  "command": "/usr/lib64/ccache/c++  -I/home/luca/Projects/vanadium/lang/include -g -o CMakeFiles/vanadium.dir/src/parser/parser.cpp.o -c /home/luca/Projects/vanadium/lang/src/parser/parser.cpp",
+  "file": "/home/luca/Projects/vanadium/lang/src/parser/parser.cpp",
+  "output": "CMakeFiles/vanadium.dir/src/parser/parser.cpp.o"
 }
 ]

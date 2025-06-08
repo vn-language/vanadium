@@ -1,6 +1,7 @@
 #ifndef INCLUDE_PARSER_ERRORS_HPP_
 #define INCLUDE_PARSER_ERRORS_HPP_
 
+#include "vanadium/diagnostics/colors.hpp"
 #include "vanadium/parser/lexer.hpp"
 #include <exception>
 #include <sstream>
@@ -19,26 +20,35 @@ public:
   const char *what() const throw() { return message.c_str(); }
 };
 
+class UnexpectedChar : public ParseError {
+public:
+  UnexpectedChar(char ch, int index, const std::string &notes = "")
+      : ParseError("Unexpected char: '" GRN + std::string(1, ch) +
+                   CRESET "' at " MAG + std::to_string(index) + CRESET +
+                   (!notes.empty() ? (": " + notes) : "")) {}
+};
+
 class UnexpectedToken : public ParseError {
 public:
   UnexpectedToken(lexer::Token token, const std::string &notes = "")
-      : ParseError("Unexpected token: '" + token.lexeme + "' at " +
-                   token.pos.as_string() +
-                   (notes.empty() ? (": " + notes) : "")) {}
+      : ParseError("Unexpected token: '" GRN + token.lexeme +
+                   CRESET "' at " MAG + token.pos.as_string() + CRESET +
+                   (!notes.empty() ? (": " + notes) : "")) {}
 };
 
 class ExpectedToken : public ParseError {
 public:
   ExpectedToken(const std::string &expected, lexer::Token got,
                 const std::string &notes = "")
-      : ParseError("Expected token: '" + expected + "' but got '" + got.lexeme +
-                   "'" + (notes.empty() ? (": " + notes) : "")) {}
+      : ParseError("Expected token '" GRN + expected +
+                   CRESET "' but got '" GRN + got.lexeme + CRESET "'" +
+                   (!notes.empty() ? (": " + notes) : "")) {}
 
   ExpectedToken(lexer::TokenType expected, lexer::Token got,
                 const std::string &notes = "")
-      : ParseError("Expected token: " + lexer::type_as_string(expected) +
-                   " but got '" + got.lexeme + "'" +
-                   (notes.empty() ? (": " + notes) : "")) {}
+      : ParseError("Expected token " BLU + lexer::type_as_string(expected) +
+                   CRESET " but got '" GRN + got.lexeme + CRESET "'" +
+                   (!notes.empty() ? (": " + notes) : "")) {}
 };
 
 class ExpectedOneOfTokens : public ParseError {
@@ -93,7 +103,7 @@ class UnexpectedEOI : public ParseError {
 public:
   UnexpectedEOI(const std::string &notes = "")
       : ParseError("Unexpected end of input" +
-                   (notes.empty() ? (": " + notes) : "")) {}
+                   (!notes.empty() ? (": " + notes) : "")) {}
 };
 
 class SyntaxError : public ParseError {
@@ -107,7 +117,7 @@ public:
   InvalidToken(const lexer::Token &token, const std::string &reason = "")
       : ParseError("Invalid token '" + token.lexeme + "' at " +
                    token.pos.as_string() +
-                   (reason.empty() ? "" : (": " + reason))) {}
+                   (!reason.empty() ? (": " + reason) : "")) {}
 };
 
 } // namespace parser

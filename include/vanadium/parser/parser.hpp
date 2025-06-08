@@ -4,10 +4,20 @@
 #include "vanadium/parser/ast.hpp"
 #include "vanadium/parser/lexer.hpp"
 #include <cstddef>
+#include <utility>
 #include <vector>
 
 namespace vanadium {
 namespace parser {
+
+enum Precedence {
+  PREC_LOWEST = 0,
+  PREC_ASSIGNMENT = 1,
+  PREC_TERM = 2,
+  PREC_FACTOR = 3,
+  PREC_PREFIX = 4,
+  PREC_CALL = 5,
+};
 
 typedef std::vector<NodeP> NodeList;
 
@@ -49,15 +59,28 @@ private:
   NodeP parse_start();
 
   /* Expressions */
-  NodeP parse_expr(); // Pratt parsing
+  NodeP parse_expr();
+  NodeP parse_block();
+  NodeP parse_type();
+  NodeP parse_new();
+  NodeP parse_throw();
+
+  /* Pratt */
+  NodeP pratt(int precedence);
+  NodeP parse_prefix();
+  NodeP parse_infix(NodeP left, Precedence precedence);
 
   /* Declarations */
   NodeP parse_decl();
-  std::vector<lexer::Token> parse_modifiers();
-  NodeP parse_vardecl(std::vector<lexer::Token> modfs);  // VarDecl
-  NodeP parse_funcdecl(std::vector<lexer::Token> modfs); // FuncDecl
-  NodeP parse_classdecl();                               // ClassDecl
-  NodeP parse_structdecl();                              // StructDecl
+  NodeP parse_vardecl(std::vector<lexer::TokenType> modfs);
+  NodeP parse_funcdecl(std::vector<lexer::TokenType> modfs);
+  NodeP parse_classdecl();
+  NodeP parse_structdecl();
+
+  /* Misc. */
+  NodeP parse_include();
+  std::vector<lexer::TokenType> parse_modifiers();
+  std::vector<std::pair<std::string, NodeP>> parse_parameters();
 };
 
 } // namespace parser

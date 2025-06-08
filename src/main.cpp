@@ -1,38 +1,60 @@
 #include <cstdio>
-/*#include <iostream>*/
+#include <iostream>
 #include <string>
 
-/*#include "vanadium/parser/ast.hpp"*/
+#include "vanadium/diagnostics/diagnostics.hpp"
+#include "vanadium/parser/errors.hpp"
 #include "vanadium/parser/lexer.hpp"
-/*#include "vanadium/parser/parser.hpp"*/
+#include "vanadium/parser/parser.hpp"
 
 using namespace vanadium;
 
 int main(int argc, char *argv[]) {
+  /* const std::string input = R"(*/
+  /* static func main() {*/
+  /*let loves_cxx = true;*/
+  /*throw new Exception("I hate C++") unless loves_cxx;*/
+  /*@@ throw new Exception("I hate C++") unless loves_cxx ifso println("I LOVE
+   * C++");*/
+  /* }*/
+  /*)";*/
   const std::string input = R"(
-  from "std/io" include println;
+  from "std/IO" include println;
 
   static func main() {
-	const x = 2 + 3.3 - 8.;
-	let no_errors = true;
-	try {
-	  let y = x as string;
-	} catch {|e| println(e); no_errors = false};
-
-	println("No errors!") unless not no_errors ifso println("Errors!");
-  })";
-  lexer::TokenStream ts = lexer::tokenize(input);
-
-  while (ts.has_next()) {
-    ts.next().display();
+	let
   }
+  )";
 
-  /*parser::Parser p(ts);*/
-  /*parser::AST ast = p.parse();*/
-  /**/
-  /*for (auto node : ast.iter()) {*/
-  /*  std::cout << node->as_string() << std::endl;*/
-  /*}*/
+  try {
+    lexer::TokenStream ts = lexer::tokenize(input);
+
+    /*for (auto &tk : ts.get_tokens()) {*/
+    /*  tk.display();*/
+    /*}*/
+
+    try {
+      parser::Parser p(ts);
+      parser::NodeStream ast = p.parse();
+
+      for (auto &node : ast.get_nodes()) {
+        std::cout << node->as_string() << std::endl;
+      }
+    } catch (const parser::ParseError &e) {
+      diagnostics::Diagnostic diag(diagnostics::Severity::Error, "Parse error",
+                                   e.what());
+      diag.add_label(
+          diagnostics::Label("input hardcoded into src/main.cpp!", "Source"));
+      diag.print();
+    }
+  } catch (const parser::ParseError &e) {
+    diagnostics::Diagnostic diag(diagnostics::Severity::Error, "Lex error",
+                                 e.what());
+
+    diag.add_label(
+        diagnostics::Label("input hardcoded into src/main.cpp!", "Source"));
+    diag.print();
+  }
 
   return 0;
 }

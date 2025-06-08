@@ -1,4 +1,5 @@
 #include "vanadium/parser/lexer.hpp"
+#include "vanadium/parser/errors.hpp"
 #include "vanadium/util_macros.hpp"
 
 #include <cctype>
@@ -11,7 +12,10 @@ namespace vanadium {
 namespace lexer {
 
 /*  TokenStream methods */
-Token TokenStream::next() { return tokens.at(current++); }
+Token TokenStream::next() {
+  current++;
+  return tokens.at(current);
+}
 Token TokenStream::get() { return tokens.at(current); }
 
 bool TokenStream::has_next() { return tokens.size() > current + 1; }
@@ -66,7 +70,7 @@ TokenStream tokenize(std::string input) {
       continue;
     }
 
-    if (AT_INDEX == '\n' || AT_INDEX == ' ') {
+    if (AT_INDEX == '\n' || AT_INDEX == ' ' || AT_INDEX == '\t') {
       if (AT_INDEX == '\n') {
         line++;
       }
@@ -152,7 +156,12 @@ TokenStream tokenize(std::string input) {
       PUSH_TOKEN(Token(TokenType::Punct, lex, from, to, line));
     }
 
-    index++;
+    if (AT_INDEX == ';') {
+      index++;
+      PUSH_TOKEN(Token(TokenType::EOS, ";", index, index, line));
+    }
+
+    throw parser::UnexpectedChar(AT_INDEX, index);
   }
 
   tokens.push_back(Token(TokenType::EOI, "", input.size(), input.size()));
@@ -263,6 +272,12 @@ std::string type_as_string(TokenType type) {
     return "Or";
   case TokenType::Not:
     return "Not";
+  case TokenType::EOS:
+    return "EOS";
+  case TokenType::Bool:
+    return "Boolean";
+  case TokenType::Null:
+    return "Null";
 
   default:
     throw std::invalid_argument("Unknown TokenType");

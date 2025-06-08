@@ -21,6 +21,8 @@ enum class TokenType {
   String,
   Op,
   Punct,
+  Bool,
+  Null,
 
   // keywords
   If,
@@ -68,6 +70,10 @@ enum class TokenType {
   Or,
   Not,
   Sealed,
+  Comptime,
+
+  // Misc.
+  EOS,
 };
 
 extern std::string type_as_string(TokenType type);
@@ -116,12 +122,15 @@ const std::map<std::string, TokenType> keyword_map = {
     {"and", TokenType::And},
     {"or", TokenType::Or},
     {"not", TokenType::Not},
-    {"sealed", TokenType::Sealed}};
+    {"sealed", TokenType::Sealed},
+    {"comptime", TokenType::Comptime},
+    {"true", TokenType::Bool},
+    {"false", TokenType::Bool},
+    {"null", TokenType::Null}};
 
 const std::set<char> op_list = {'-', '+', '*', '/', '^', '=',
                                 '<', '>', '!', '?', '&', '|'};
-const std::set<char> punct_list = {'(', ')', '{', '}', '[',
-                                   ']', ':', ';', '.', ','};
+const std::set<char> punct_list = {'(', ')', '{', '}', '[', ']', ':', '.', ','};
 
 struct TokenPos {
   long from;
@@ -132,7 +141,7 @@ struct TokenPos {
 
   std::string as_string() const {
     return std::string((line != -1) ? std::to_string(line) : "unknown") + ":" +
-           ((from != -1) ? std::to_string(from) : "unknown") + "," +
+           ((from != -1) ? std::to_string(from) : "unknown") + "-" +
            ((to != -1) ? std::to_string(to) : "unknown");
   }
 };
